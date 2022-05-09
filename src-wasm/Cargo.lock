@@ -51,6 +51,7 @@ dependencies = [
 name = "src-wasm"
 version = "0.1.0"
 dependencies = [
+ "lazy_static",
  "wasm-bindgen",
 ]
 

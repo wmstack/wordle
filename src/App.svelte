@@ -1,18 +1,10 @@
 <script lang="ts">
-	import wasm from "../src-wasm/Cargo.toml";
 	import {app, dialog} from "@tauri-apps/api";
 	import Game from "./Game.svelte";
 
 	let name: string = "Web";
 	let menu = "home";
-	app.getName().then((r)=> name = r)
-
-	async function load() {
-		let glob = await wasm({});
-		glob.hello();
-	}
-	
-	load();
+	app.getName().then((r) => name = r);
 </script>
 
 <main>
@@ -36,7 +28,7 @@
 	{:else}
 		<h1> Huh?</h1>
 	{/if}
-	
+
 </main>
 
 <style lang="scss">

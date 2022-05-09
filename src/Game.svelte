@@ -1,4 +1,14 @@
 <script lang="ts">
+	import wasm from "../src-wasm/Cargo.toml";
+
+  // the exports of the wasm module.
+  let wasm_exports = undefined;
+  async function load() {
+		wasm_exports = await wasm({});
+		// glob.hello();
+	}
+	load();
+
   const ROWS = 6;
   const COLS = 5;
   // matching any letter from the keyboard.
@@ -17,10 +27,24 @@
           content[guesses][letter_nums] = "";
         }
         break;
-      case 13: /* enter */ 
+      case 13: /* enter */
         if (letter_nums >= COLS && guesses < ROWS){
-          letter_nums = 0;
-          guesses++;
+          // turn the text into a word
+          let guess = content[guesses].join("").toLowerCase();
+
+          // if we have a word, then say it is a word.
+          if (wasm_exports.is_word(guess)) {
+            // go back to the first column
+            letter_nums = 0;
+
+            // write some stuff to the console.
+            console.log(`${guess} is a word`)
+            console.log(`${wasm_exports.feedback(guess, "happy")}`);
+
+            guesses++;
+            // go to the next row.
+          }
+
         }
       default: /* Try to read a key */
         let key = event.key.toUpperCase();
