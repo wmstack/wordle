@@ -14,13 +14,21 @@
 </script>
 
 <main>
-	<h1>Hello {name}!</h1>
-	<h1>{name}</h1>
-	<!-- <h1>{Tauri}</h1> -->
-	<p>Visit the <a href="https://svelte.dev/tutorial">Svelte tutorial</a> to learn how to build Svelte apps.</p>
+	<h1>Wordle!</h1>
+	<div>
+		<button>Play</button>
+		<button>Scoreboard</button>
+		<button>Quit</button>
+	</div>
 </main>
 
 <style>
+	button {
+		min-width: 500px;
+		background-color: cornsilk;
+		font-size: 3em;
+		font-weight: bold;
+	}
 	main {
 		text-align: center;
 		padding: 1em;
@@ -29,10 +37,10 @@
 	}
 
 	h1 {
-		color: #ff3e00;
+		color: cornsilk;
 		text-transform: uppercase;
 		font-size: 4em;
-		font-weight: 100;
+		font-weight: bold;
 	}
 
 	@media (min-width: 640px) {
