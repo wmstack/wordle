@@ -1,17 +1,33 @@
 <script lang="ts">
   const ROWS = 6;
   const COLS = 5;
+  // matching any letter from the keyboard.
+  const REG = /^[A-Z]$/;
+
   let content = Array(ROWS).fill(0).map(()=>Array(COLS).fill(""));
-  let pos = 0
+  let letter_nums = 0 /* current col idx */
+  let guesses = 0 /* current row idx */
+
   function add_letter(event) {
-    if (event.keyCode == 8) {
-      // handle backspace
-      pos--;
-      content[0][pos] = "";
-    } else if (pos < 5) {
-      // handle other characters
-      content[0][pos] = event.key.toUpperCase();
-      pos++;
+    // match the keycode
+    switch (event.keyCode) {
+      case 8: /* backspace */
+        if (letter_nums > 0) {
+          letter_nums--;
+          content[guesses][letter_nums] = "";
+        }
+        break;
+      case 13: /* enter */ 
+        if (letter_nums >= COLS && guesses < ROWS){
+          letter_nums = 0;
+          guesses++;
+        }
+      default: /* Try to read a key */
+        let key = event.key.toUpperCase();
+        if (REG.test(key) && letter_nums < COLS) {
+          content[guesses][letter_nums] = event.key.toUpperCase();
+          letter_nums++;
+        }
     }
   }
 </script>
@@ -20,11 +36,11 @@
 
 <h1>GAME</h1>
 <table>
-  {#each content as row}
+  {#each content as row, i}
     <tr>
-      {#each row as col}
+      {#each row as col, j}
       <td>
-        <span>
+        <span class:active="{i == guesses && j == letter_nums - 1}">
           {col}
         </span>
       </td>
@@ -34,6 +50,9 @@
 </table>
 
 <style>
+  .active {
+    color: gold;
+  }
   table {
     margin-left: auto;
     margin-right: auto;
