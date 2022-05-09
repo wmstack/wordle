@@ -1,8 +1,10 @@
 <script lang="ts">
 	import wasm from "../src-wasm/Cargo.toml";
 	import {app, dialog} from "@tauri-apps/api";
+	import Game from "./Game.svelte";
 
-	let name: string;
+	let name: string = "None";
+	let menu = "home";
 	app.getName().then((r)=> name = r)
 
 	async function load() {
@@ -14,12 +16,19 @@
 </script>
 
 <main>
-	<h1>Wordle!</h1>
-	<div>
-		<button>Play</button>
-		<button>Scoreboard</button>
-		<button>Quit</button>
-	</div>
+	{#if menu == "home"}
+		<h1>Wordle! {name}</h1>
+		<div>
+			<button on:click={()=> menu = "game"}>Play</button>
+			<button>Scoreboard</button>
+			<button on:click={()=>window.close()}>Quit</button>
+		</div>
+	{:else if menu == "game"}
+		<Game></Game>
+	{:else}
+		<h1> Huh?</h1>
+	{/if}
+	
 </main>
 
 <style>
