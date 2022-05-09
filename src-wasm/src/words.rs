@@ -1,6 +1,6 @@
 use lazy_static::lazy_static;
 use wasm_bindgen::prelude::*;
-
+use rand::seq::SliceRandom;
 // create a word list
 lazy_static! {
   static ref WORD_LIST: Vec<&'static str> = include_str!("../../assets/sgb-words.txt")
@@ -13,6 +13,10 @@ pub fn is_word(word: &str) -> bool {
   return WORD_LIST.contains(&word);
 }
 
+#[wasm_bindgen]
+pub fn random_word() -> String {
+  WORD_LIST.choose(&mut rand::thread_rng()).unwrap().to_string()
+}
 // Wordle letter feedback enum.
 #[derive(Clone, Copy, PartialEq)]
 #[repr(u8)]
