@@ -41,7 +41,7 @@
         // go back to the first column
         letter_nums = 0;
         guesses++;
-
+        
         console.log(`${guess} is a word`)
         console.log(`${wasm_exports.feedback(guess, "happy")}`);
       }
