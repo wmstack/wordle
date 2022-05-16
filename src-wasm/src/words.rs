@@ -50,7 +50,7 @@ pub fn feedback(guess_word: &str, secret_word: &str) -> Vec<u8> {
     
     // color the yellow matches
     if let Some(pos) = guess_word.chars().enumerate().position(
-      |i, c| answers[i] == LetterFeedback::NotFound && c == letter
+      |(i, c)| answers[i] == LetterFeedback::NotFound && c == letter
     ) {
       answers[pos] = LetterFeedback::Mismatch
     }
