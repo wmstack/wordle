@@ -12,11 +12,14 @@
 	{#if menu == "home"}
 		<h1>Wordle!</h1>
 		<h3> Client: {name} </h3>
-		<div>
-			<button on:click={() => menu = "game"}>Play</button>
-			<button on:click={() => menu = "scores"}>Scores</button>
-			<button on:click={() => window.close()}>Quit</button>
+		<div class="rw center">
+			<div class="flex flex-col">
+				<button on:click={() => menu = "game"}>Play</button>
+				<button on:click={() => menu = "scores"}>Scores</button>
+				<button on:click={() => window.close()}>Quit</button>
+			</div>
 		</div>
+		
 	<!-- the game menu -->
 	{:else if menu == "game"}
 		<Game></Game>
@@ -32,6 +35,21 @@
 </main>
 
 <style lang="scss">
+	.rw {
+		width: 600px;
+	}
+	.center {
+		align-items: center;
+		margin: auto;
+	}
+
+	.flex {
+		display: flex;
+	}
+
+	.flex-col {
+		flex-direction: column;
+	}
 	button {
 		min-width: 500px;
 		background-color: cornsilk;
