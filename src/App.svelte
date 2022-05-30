@@ -6,11 +6,19 @@
 
 	let name: string = "Web";
 	let menu = "home";
-	app.getName().then((r) => name = r);
+	
+	app.getName().then((r) => name = r).catch((err) => {
+		console.log("The frontend isn't running on tauri.")
+	});
+
 	fs.writeFile({
 		contents: "hello, world!",
 		path: "hello.txt"
+	}).catch((err) => {
+		console.log("Can't create a file on a non-tauri backend.")
 	})
+	
+	
 </script>
 
 <main>
