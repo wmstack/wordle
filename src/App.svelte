@@ -1,10 +1,16 @@
 <script lang="ts">
-	import {app, dialog} from "@tauri-apps/api";
+	// frontend documentation
+	// https://tauri.studio/v1/api/js/modules/app
+	import {app, fs} from "@tauri-apps/api";
 	import Game from "./Game.svelte";
 
 	let name: string = "Web";
 	let menu = "home";
 	app.getName().then((r) => name = r);
+	fs.writeFile({
+		contents: "hello, world!",
+		path: "hello.txt"
+	})
 </script>
 
 <main>
