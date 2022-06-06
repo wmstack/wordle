@@ -19,7 +19,7 @@ declare interface Dictionary {
      * @param guess_word the word that is compared
      * @returns feedback
      */
-    feedback(secret_word, guess_word): Feedback[]
+    feedback(guess_word, secret_word): Feedback[]
 }
 
 export default function wasm(params: object): Promise<Dictionary>
