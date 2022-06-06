@@ -1,5 +1,6 @@
 <script lang="ts">
-	import wasm from "../src-wasm/Cargo.toml";
+	import wasm, { Dictionary } from "../src-wasm/Cargo.toml";
+  import {arrayEq} from "./utils";
   // wordle table size
   const ROWS = 6;
   const COLS = 5;
@@ -15,13 +16,13 @@
   let secret_word: string;
   // import wasm code
   let wasm_loaded = false;
-  let wasm_exports = undefined;
+  let wasm_exports: Dictionary | null = null;
 
   async function load() {
 		wasm_exports = await wasm({});
     wasm_loaded = true;
     secret_word = wasm_exports.random_word();
-    console.log(`The secret word is ${secret_word}`)
+    console.log(`[Game] The secret word is ${secret_word}`)
 	}
 	load();
 
@@ -32,28 +33,62 @@
       content[guesses][letter_nums] = "";
     }
   }
-
-  // submit the currently written word 
+  
+  // Submit the currently written word.
   function submit_word(){
-    console.log(1)
-    if (letter_nums >= COLS && guesses < ROWS){
-      // turn the text into a lower-case word
-      let guess = content[guesses].join("").toLowerCase();
-      console.log(guess, wasm_exports.is_word(guess))
-
-      if (wasm_exports.is_word(guess)) {
-        // go back to the first column
-        letter_nums = 0;
-        guesses++;
-
-        let feedback = wasm_exports.feedback(guess, secret_word);
-        feedback_arr.push(feedback);
-        feedback_arr = feedback_arr;
-
-        console.log(`${guess} is a word`) 
-        
-      }
+    if (guesses >= ROWS) {
+      console.log(`[Game Error] The game is finished; There are ${ROWS} rows and you ahve guessed ${guesses} times`);
+      return;
+    } 
+    
+    if (letter_nums > COLS) {
+      console.log(`[Game Error] Only ${letter_nums} letters written, needed ${COLS}`)
+      return;
     }
+
+    // turn the text into a lower-case word
+    let guess: string = content[guesses].join("").toLowerCase();
+    if (!wasm_exports.is_word(guess)) {
+      console.log(`[Game Error] The entry ${guess} isn't a valid word.`)
+      return;
+    }
+
+    // Often happens that js doesn't recognized true words.
+    console.log(`[Game] ${guess} is a word`)
+
+    // go back to the first column
+    letter_nums = 0;
+    guesses++;
+
+    let feedback = wasm_exports.feedback(guess, secret_word)
+    let human_feedback = feedback.map(el => {
+      type FeedbackStr = "Not Found" | "Exact" | "Mismatch"
+      let letter_feedback: FeedbackStr = "Not Found";
+      switch (el) {
+        case 0:
+          letter_feedback =  "Not Found"
+          break;
+        case 1:
+          letter_feedback =  "Exact"
+          break
+        case 2:
+          letter_feedback = "Mismatch"
+          break
+      }
+      return letter_feedback
+    })
+    
+    console.log(`[Game] The feedback is ${human_feedback}.`)
+
+    if (arrayEq(feedback, [1, 1, 1, 1, 1])) {
+      console.log("[Game] You win!")
+    } else {
+      
+    }
+
+    feedback_arr.push(feedback);
+    feedback_arr = feedback_arr;
+    
   }
 
 

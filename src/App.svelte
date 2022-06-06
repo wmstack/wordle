@@ -3,21 +3,20 @@
 	// https://tauri.studio/v1/api/js/modules/app
 	import {app, fs} from "@tauri-apps/api";
 	import Game from "./Game.svelte";
-
+    
 	let name: string = "Web";
 	let menu = "home";
 	
 	app.getName().then((r) => name = r).catch((err) => {
-		console.log("The frontend isn't running on tauri.")
+		console.log("[Developer] The frontend isn't running on tauri.")
 	});
 
 	fs.writeFile({
 		contents: "hello, world!",
 		path: "hello.txt"
 	}).catch((err) => {
-		console.log("Can't create a file on a non-tauri backend.")
+		console.log("[Developer] Can't create a file on a non-tauri backend.")
 	})
-	
 	
 </script>
 
