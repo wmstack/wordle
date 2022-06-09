@@ -3,9 +3,10 @@
 	// https://tauri.studio/v1/api/js/modules/app
 	import {app, fs} from "@tauri-apps/api";
 	import Game from "./Game.svelte";
-    
+    /** this code is a mess. I blame typescript. I could've had consistent enums for the menu and the letter feedback, 
+	 * if only javascript supported it. Alas.*/
 	let name: string = "Web";
-	let menu = "home";
+	let menu: string = "home";
 	
 	app.getName().then((r) => name = r).catch((err) => {
 		console.log("[Developer] The frontend isn't running on tauri.")

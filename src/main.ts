@@ -1,4 +1,8 @@
-import App from './App.svelte';
+/** This script is loaded by the index html file. 
+ * It is used to import the svelte app `App.svelte` and run it. 
+ * */
+
+import App from './apps/App.svelte';
 const app = new App({
 	target: document.body,
 	props: {

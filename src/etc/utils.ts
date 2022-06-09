@@ -1,4 +1,5 @@
-export function arrayEq(arr1, arr2) {
+/** checks the equality of two arrays by comparing their contents one-by-one. */
+export function arrayEq<T>(arr1: T[], arr2: T[]) {
     if (arr1.length != arr2.length) {
         return false
     }
