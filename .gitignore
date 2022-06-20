@@ -2,3 +2,4 @@
 /public/build/
 /docs/notes.md
 .DS_Store
+.gitignore

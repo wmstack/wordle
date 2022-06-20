@@ -1,36 +1,60 @@
 <script lang="ts">
-	// frontend documentation
+	// tauri documentation for the frontend
 	// https://tauri.studio/v1/api/js/modules/app
 	import {app, fs} from "@tauri-apps/api";
 	import Game from "./Game.svelte";
-    /** this code is a mess. I blame typescript. I could've had consistent enums for the menu and the letter feedback, 
-	 * if only javascript supported it. Alas.*/
-	let name: string = "Web";
-	let menu: string = "home";
-	
-	app.getName().then((r) => name = r).catch((err) => {
+
+    // the name of the backend, which can either be Tauri or Web. We are not using Electron as a backend.
+	// By default, the backend is Web until Tauri is detected.
+	let backend_name: "Tauri" | "Web" = "Web";
+	// If we detect Tauri, switch backend_name to Tauri, otherwise notify us in the developer's console.
+	app.getName().then((r) => backend_name = "Tauri").catch((err) => {
 		console.log("[Developer] The frontend isn't running on tauri.")
 	});
 
-	fs.writeFile({
-		contents: "hello, world!",
-		path: "hello.txt"
-	}).catch((err) => {
-		console.log("[Developer] Can't create a file on a non-tauri backend.")
-	})
-	
+	// what menu we are in
+	let menu: string = "home";
+	function load_game() {
+		menu = "game";
+	}
+
+	let scores = []
+	function load_scores() {
+		menu = "scores";
+
+		function fulfilled(data: string) {
+			console.log("[Developer] Succeeded in finding scores", data);
+			scores = JSON.parse(data);
+		}
+		function rejected(err: any) {
+			console.log(`[Developer] Failed to load scores.txt`, err);
+		}
+		fs.readTextFile("scores.txt").then(fulfilled, rejected);
+
+		fs.writeFile({
+			contents: "hello, world!",
+			path: "hello.txt"
+		}).catch((err) => {
+			console.log("[Developer] Can't create a file on a non-tauri backend.")
+		})
+	}
+
+	function quit() {
+		window.close()
+	}
+
 </script>
 
 <main>
 	<!-- the main menu -->
 	{#if menu == "home"}
 		<h1>Wordle!</h1>
-		<h3> Client: {name} </h3>
+		<h3> Client: {backend_name} </h3>
 		<div class="rw center">
 			<div class="flex flex-col">
-				<button on:click={() => menu = "game"}>Play</button>
-				<button on:click={() => menu = "scores"}>Scores</button>
-				<button on:click={() => window.close()}>Quit</button>
+				<button on:click={load_game}>Play</button>
+				<button on:click={load_scores}>Scores</button>
+				<button on:click={quit}>Quit</button>
 			</div>
 		</div>
 		
@@ -39,11 +63,15 @@
 		<Game></Game>
 	<!-- the scores menu -->
 	{:else if menu == "scores"}
-		<h1> TODO </h1>
-		<div></div>
-	<!-- the non-existent menu -->
+		<div class = "rw center">
+			{#each scores as score}
+				<p> {score} </p>
+			{/each}	
+		</div>
+		
+	<!-- the non-existent menu. If the menu is ever undefined, this menu would pop up, and I would know that an error happened. -->
 	{:else}
-		<h1> Huh?</h1>
+		<h1> Huh? </h1>
 	{/if}
 
 </main>
