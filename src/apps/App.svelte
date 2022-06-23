@@ -18,9 +18,10 @@
 		menu = "game";
 	}
 
-	let scores = []
+	let scores = ["hi", "how", "are", "we"]
 	function load_scores() {
-		menu = "scores";
+		console.log("loading scores");
+		menu = "scores";	
 
 		function fulfilled(data: string) {
 			console.log("[Developer] Succeeded in finding scores", data);
@@ -60,15 +61,12 @@
 		
 	<!-- the game menu -->
 	{:else if menu == "game"}
-		<Game></Game>
+		<Game bind:menu={menu}></Game>
 	<!-- the scores menu -->
 	{:else if menu == "scores"}
-		<div class = "rw center">
-			{#each scores as score}
-				<p> {score} </p>
-			{/each}	
-		</div>
-		
+		{#each scores as score}
+			<p> {score} </p>
+		{/each}	
 	<!-- the non-existent menu. If the menu is ever undefined, this menu would pop up, and I would know that an error happened. -->
 	{:else}
 		<h1> Huh? </h1>

@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "rollup": "rollup -c ./cfg/rollup/rollup.config.js -w",
+    "rollup": "rollup -c -w",
     "tauri": "tauri",
-    "build": "rollup -c ./cfg/rollup/rollup.config.js",
+    "build": "rollup -c",
     "dev": "concurrently \"rollup -c  ./cfg/rollup/rollup.config.js -w\" \"npm run tauri dev\"",
     "start": "sirv public --no-clear",
     "check": "svelte-check --tsconfig .cfg/typescript/tsconfig.json"
