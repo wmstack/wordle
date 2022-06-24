@@ -1,16 +1,17 @@
 use lazy_static::lazy_static;
 use wasm_bindgen::prelude::*;
 use rand::seq::SliceRandom;
+
 // create a word list
 lazy_static! {
   static ref WORD_LIST: Vec<&'static str> = include_str!("../../assets/sgb-words.txt")
-    .split('\n')
+    .split("\r\n")
     .collect();
 }
 
 #[wasm_bindgen]
 pub fn is_word(word: &str) -> bool {
-  return WORD_LIST.contains(&word);
+  return WORD_LIST.contains(&word.trim());
 }
 
 #[wasm_bindgen]
@@ -46,8 +47,10 @@ pub fn feedback(guess_word: &str, secret_word: &str) -> Vec<u8> {
     if answers[idx] == LetterFeedback::Exact {
       continue;
     }
-    if let Some(pos) = guess_word.chars().position(
-      |c| answers[idx] == LetterFeedback::NotFound && c == letter
+    
+    // color the yellow matches
+    if let Some(pos) = guess_word.chars().enumerate().position(
+      |(i, c)| answers[i] == LetterFeedback::NotFound && c == letter
     ) {
       answers[pos] = LetterFeedback::Mismatch
     }
