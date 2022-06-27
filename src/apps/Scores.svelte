@@ -1,17 +1,16 @@
 <script lang="ts">
     import {fs} from "@tauri-apps/api"
-
-    let scores = []
+    export let scores: any[];
+    export let menu: string;
     fs.readTextFile("scores.txt").then((res)=>{
-        scores = JSON.parse(res)
+        scores = scores.concat(JSON.parse(res))
     }, (rej) =>{
-        // mock scores.txt
-        scores = JSON.parse('["a","e","g"]')
         console.log("[Developer] Failed to open scores.txt")
     })
     
 </script>
 
 {#each scores as score}
-    <p> {score} </p>
-{/each}	
+    <p> {score.date || ""} Guesses: {score.guesses || 0} </p>
+{/each}
+<button on:click={() => menu = "home"}> Main Menu</button>

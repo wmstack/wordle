@@ -24,6 +24,12 @@
 	function quit() {
 		window.close()
 	}
+	
+	let scores = []
+	function add_score(data: { detail: any; }){
+		console.log("[Developer] Added a new score to the list of scores.", data)
+		scores.push(data.detail)
+	}
 
 </script>
 
@@ -42,10 +48,10 @@
 		
 	<!-- the game menu -->
 	{:else if menu == "game"}
-		<Game bind:menu={menu}></Game>
+		<Game bind:menu={menu} on:new_score={add_score}></Game>
 	<!-- the scores menu -->
 	{:else if menu == "scores"}
-		<Scores></Scores>
+		<Scores bind:menu={menu} scores={scores}></Scores>
 	<!-- the non-existent menu. If the menu is ever undefined, this menu would pop up, and I would know that an error happened. -->
 	{:else}
 		<h1> Huh? </h1>

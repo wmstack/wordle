@@ -1,7 +1,9 @@
 <script lang="ts">
+  import {createEventDispatcher} from "svelte";
 	import wasm, { Dictionary, Feedback } from "../../src-wasm/Cargo.toml";
   import {arrayEq} from "../etc/utils";
   
+  let dispatch = createEventDispatcher()
   // wordle table size
   const ROWS = 6;
   const COLS = 5;
@@ -81,8 +83,12 @@
 
     // if we win, increase the streak
     if (arrayEq(feedback, [1, 1, 1, 1, 1])) {
-      console.log("[Game] You won!")
-      game_status = "Won"
+      console.log("[Game] You won!");
+      dispatch("new_score", {
+        guesses,
+        date: new Date().toLocaleString(),
+      });
+      game_status = "Won";
       streak++;
       
     } else {
