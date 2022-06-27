@@ -3,11 +3,12 @@
 	// https://tauri.studio/v1/api/js/modules/app
 	import {app, fs} from "@tauri-apps/api";
 	import Game from "./Game.svelte";
+	import Scores from "./Scores.svelte"
 
-    // the name of the backend, which can either be Tauri or Web. We are not using Electron as a backend.
+    // the backend.
 	// By default, the backend is Web until Tauri is detected.
 	let backend_name: "Tauri" | "Web" = "Web";
-	// If we detect Tauri, switch backend_name to Tauri, otherwise notify us in the developer's console.
+	// If we detect Tauri, switch backend_name to Tauri.
 	app.getName().then((r) => backend_name = "Tauri").catch((err) => {
 		console.log("[Developer] The frontend isn't running on tauri.")
 	});
@@ -17,29 +18,9 @@
 	function load_game() {
 		menu = "game";
 	}
-
-	let scores = ["hi", "how", "are", "we"]
 	function load_scores() {
-		console.log("loading scores");
-		menu = "scores";	
-
-		function fulfilled(data: string) {
-			console.log("[Developer] Succeeded in finding scores", data);
-			scores = JSON.parse(data);
-		}
-		function rejected(err: any) {
-			console.log(`[Developer] Failed to load scores.txt`, err);
-		}
-		fs.readTextFile("scores.txt").then(fulfilled, rejected);
-
-		fs.writeFile({
-			contents: "hello, world!",
-			path: "hello.txt"
-		}).catch((err) => {
-			console.log("[Developer] Can't create a file on a non-tauri backend.")
-		})
+		menu = "scores";
 	}
-
 	function quit() {
 		window.close()
 	}
@@ -64,9 +45,7 @@
 		<Game bind:menu={menu}></Game>
 	<!-- the scores menu -->
 	{:else if menu == "scores"}
-		{#each scores as score}
-			<p> {score} </p>
-		{/each}	
+		<Scores></Scores>
 	<!-- the non-existent menu. If the menu is ever undefined, this menu would pop up, and I would know that an error happened. -->
 	{:else}
 		<h1> Huh? </h1>

@@ -5,18 +5,15 @@
   // wordle table size
   const ROWS = 6;
   const COLS = 5;
-
-  // after the game finishes, we want to go back to
-  // the main menu.
-  export let menu;
-
   // regular expression for matching a letter
   const REG = /^[A-Z]$/;
 
-  // need to make a ROW by COL matrix for the data table
-  /** array corresponding to the rows of the wordle table. Each row is an array of 5 letters. */
-  let content: string[][] = Array(ROWS).fill(0).map(()=>Array(COLS).fill(''));
+  // binding that enables us to return to main menu
+  export let menu;
+  let game_status: "Pending" | "Won" | "Lost" = "Pending";
 
+  // need to make a ROW by COL matrix for the data table
+  let content: string[][] = Array(ROWS).fill(0).map(()=>Array(COLS).fill(''));
   /** contains the feedback for previous guesses. */
   let feedback_arr: Feedback[][] = [];
   
@@ -50,11 +47,14 @@
   
   // Submit the currently written word.
   function submit_word(){
+
+    // return if final guesses have been reached
     if (guesses >= ROWS) {
       console.log(`[Game Error] The game is finished; There are ${ROWS} rows and you ahve guessed ${guesses} times`);
       return;
     } 
     
+    // return if not enough letters were written
     if (letter_nums > COLS) {
       console.log(`[Game Error] Only ${letter_nums} letters written, needed ${COLS}`)
       return;
@@ -67,47 +67,34 @@
       return;
     }
 
-    // Often happens that js doesn't recognized true words.
+    // tell the developer that this is a word.
+    // it happened in the past that crlf made
+    // rust code not work properly.
     console.log(`[Game] ${guess} is a word`)
 
     // go back to the first column
     letter_nums = 0;
     guesses++;
 
+    // 0 for not found, 1 for exact, 2 for mismatch, (can't transfer an enum from Rust)
     let feedback = wasm_exports.feedback(guess, secret_word)
-    let human_feedback = feedback.map(el => {
-      type FeedbackStr = "Not Found" | "Exact" | "Mismatch"
-      let letter_feedback: FeedbackStr = "Not Found";
-      switch (el) {
-        case 0:
-          letter_feedback =  "Not Found"
-          break;
-        case 1:
-          letter_feedback =  "Exact"
-          break
-        case 2:
-          letter_feedback = "Mismatch"
-          break
-      }
-      return letter_feedback
-    })
-    
-    console.log(`[Game] The feedback is ${human_feedback}.`)
 
+    // if we win, increase the streak
     if (arrayEq(feedback, [1, 1, 1, 1, 1])) {
       console.log("[Game] You won!")
+      game_status = "Won"
       streak++;
       
     } else {
       if (guesses == ROWS) {
         streak = 0
         console.log("[Game] You lost!")
+        game_status = 'Lost'
       }
     }
 
     feedback_arr.push(feedback);
     feedback_arr = feedback_arr;
-    
   }
 
 
@@ -165,12 +152,43 @@
       {/each}
     </tr>
   {/each}
+  
 </table>
 
-<style>
+<!-- show a button on game completion -->
+{#if game_status != "Pending"}
+      <p>
+        You have {game_status == "Won" ? "won!" : "lost!"} 
+        The secret word was <span class="green">{secret_word}</span>!
+      </p>
+      <button on:click={()=> {menu = "home"}}>
+        Main Menu
+      </button>
+{/if}
+
+<style lang="scss">
   .active {
     color: gold;
   }
+
+  .green {
+    color: green;
+    background-color: transparent;
+  }
+  p {
+    font-family: monospace;
+    font-weight: bold;
+    font-size: large;
+  }
+  button {
+		min-width: 250px;
+		background-color: cornsilk;
+		font-size: 2em;
+		font-weight: bold;
+		&:hover {
+			background-color: blanchedalmond;
+		}
+	}
   .green {
     background-color: rgb(170, 226, 86);
   }
