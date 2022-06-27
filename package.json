@@ -6,9 +6,9 @@
     "rollup": "rollup -c -w",
     "tauri": "tauri",
     "build": "rollup -c",
-    "dev": "concurrently \"rollup -c -w\" \"npm run tauri dev\"",
+    "dev": "concurrently \"rollup -c  ./cfg/rollup/rollup.config.js -w\" \"npm run tauri dev\"",
     "start": "sirv public --no-clear",
-    "check": "svelte-check --tsconfig ./tsconfig.json"
+    "check": "svelte-check --tsconfig .cfg/typescript/tsconfig.json"
   },
   "devDependencies": {
     "@rollup/plugin-commonjs": "^17.0.0",

@@ -48,7 +48,7 @@ export default {
 				dev: !production
 			}
 		}),
-		rust({serverPath: "/build/"}),
+		rust({serverPath: "../../build/"}),
 		// we'll extract any component CSS out into
 		// a separate file - better for performance
 		css({ output: 'bundle.css' }),
