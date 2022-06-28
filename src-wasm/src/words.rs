@@ -1,5 +1,6 @@
 use lazy_static::lazy_static;
 use wasm_bindgen::prelude::*;
+use js_sys;
 use rand::seq::SliceRandom;
 
 // create a word list
@@ -30,7 +31,7 @@ pub enum LetterFeedback {
 
 // give wordle style letter by letter feedback on a character.
 #[wasm_bindgen]
-pub fn feedback(guess_word: &str, secret_word: &str) -> Vec<u8> {
+pub fn feedback(guess_word: &str, secret_word: &str) -> js_sys::Array<> {
   let mut answers = vec![LetterFeedback::NotFound; 5];
 
   // correctly colour all the exact matches
@@ -56,5 +57,5 @@ pub fn feedback(guess_word: &str, secret_word: &str) -> Vec<u8> {
     }
 
   }
-  answers.iter().map(|i| *i as u8).collect()
+  answers.iter().map::<JsValue, _>(|i| (*i as u8).into()).collect()
 }
