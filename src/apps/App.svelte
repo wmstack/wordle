@@ -24,11 +24,22 @@
 	function quit() {
 		window.close()
 	}
-	
+
+	// load scores into Tauri
 	let scores = []
+	fs.readTextFile("scores.txt").then((res)=>{
+		scores = scores.concat(JSON.parse(res))
+	}, (rej) =>{
+			console.log("[Developer] Failed to open scores.txt")
+	})
+
 	function add_score(data: { detail: any; }){
 		console.log("[Developer] Added a new score to the list of scores.", data)
 		scores.push(data.detail)
+		fs.writeFile({
+			"path": "./scores.txt",
+			contents: JSON.stringify(scores)
+		})
 	}
 
 </script>
@@ -45,7 +56,7 @@
 				<button on:click={quit}>Quit</button>
 			</div>
 		</div>
-		
+
 	<!-- the game menu -->
 	{:else if menu == "game"}
 		<Game bind:menu={menu} on:new_score={add_score}></Game>
